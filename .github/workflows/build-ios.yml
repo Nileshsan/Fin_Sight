@@ -23,6 +23,8 @@ jobs:
         with:
           flutter-version: '3.10.7'
           channel: 'stable'
+          # remove architecture since runner already provides compatible binary
+          architecture: 'x64'
 
       - name: Install dependencies
         run: flutter pub get
