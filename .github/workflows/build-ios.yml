@@ -39,30 +39,19 @@ jobs:
           cd ../../../../
 
       - name: Upload IPA artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ios-ipa
           path: build/ios/iphoneos/app.ipa
           retention-days: 30
 
-      - name: Create Release
+      - name: Create Release and Upload IPA
         if: startsWith(github.ref, 'refs/tags/')
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
+          files: build/ios/iphoneos/app.ipa
+          tag_name: ${{ github.ref_name }}
           draft: false
           prerelease: false
-
-      - name: Upload IPA to Release
-        if: startsWith(github.ref, 'refs/tags/')
-        uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: build/ios/iphoneos/app.ipa
-          asset_name: FinSight-${{ github.ref }}.ipa
-          asset_content_type: application/octet-stream
